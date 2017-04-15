@@ -4,10 +4,10 @@
   "description": "Demo dashboard showing mqtt data",
   "main": "default.js",
   "dependencies": {
+    "debug": "^2.6.3",
     "express": "^4.15.2",
     "lodash": "^4.17.4",
     "mqtt": "^2.6.0",
-    "redis": "^2.7.1",
     "socket.io": "^1.7.3"
   },
   "devDependencies": {},

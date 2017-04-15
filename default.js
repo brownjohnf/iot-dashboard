@@ -2,6 +2,7 @@
 
 const
   _       = require('lodash'),
+  debug   = require('debug')('iot-dashboard'),
   express = require('express'),
   app     = express(),
   server  = require('http').createServer(app),
@@ -17,9 +18,8 @@ const
     return _.split(pair, '=')
   }))
 
-console.log(mqttTopic, mqttServer)
 let handlersRegistered = false
-console.log('devices: ', devices)
+console.log('knowen devices: ', devices)
 
 // set up connections
 const mqttClient  = mqtt.connect(mqttServer)
@@ -36,7 +36,7 @@ const handlers = {
         if (readings.length > 10) {
           readings.unshift()
         }
-        console.log(readings)
+        debug(readings)
 
         if (_.mean(readings) > 67.0) {
           return
@@ -70,7 +70,7 @@ app.get('/', (req, res) => {
 // On an incoming message, run all handlers matching the topic
 mqttClient.on('message', (topic, message) => {
   // message is Buffer
-  console.log(topic, message.toString())
+  debug('<-- ', topic, message.toString())
 
   const [channel, room, ...rest]  = _.split(topic, '/')
 
@@ -81,10 +81,10 @@ mqttClient.on('message', (topic, message) => {
 
 // Register handlers when we have a client connected
 io.on('connection', function (socket) {
-  console.log('socket.io connection open')
+  debug('socket.io connection open')
 
   if (handlersRegistered === true) {
-    console.log('client connected, but handlers already registered')
+    debug('client connected, but handlers already registered')
   }
 
   if (handlers.temperature == null) {
@@ -122,7 +122,6 @@ io.on('connection', function (socket) {
   })
 
   handlers.events.push((channel, room, message) => {
-    console.log('adding motion event')
     const data = JSON.parse(message)
     data.device.name = _.get(devices, data.device.id, 'unknown')
     socket.emit('addEvent', data)

@@ -46,7 +46,6 @@ $(document).ready(function () {
   })
 
   socket.on('updateChart', function (data) {
-    console.log(data)
     // create a chart for this kind of data, if we don't have one yet
     if (_.get(charts, data.kind) == null) {
       _.set(charts, data.kind, renderChart(data.kind))
