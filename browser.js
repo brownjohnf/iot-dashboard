@@ -64,6 +64,11 @@ $(document).ready(function () {
       maxSeries = maxSeries + 1
     }
 
+    chart.addSeries({
+      name: `${data.device.name} (${data.device.id})`,
+      data: []
+    })
+    /*
     if (chart.series[currentSeries] == null) {
       $.get(`/data/${data.kind}/${data.device.id}`, function (res) {
         chart.addSeries({
@@ -72,6 +77,7 @@ $(document).ready(function () {
         })
       })
     }
+    */
 
     chart.series[currentSeries]
       .addPoint([data.timestamp, data.value], true, appendPoint(chart, 0, 10000));
